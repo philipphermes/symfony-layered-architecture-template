@@ -1,0 +1,76 @@
+deptrac:
+    paths:
+        - ./src
+    exclude_files:
+        - '#.*test.*#i'
+    layers:
+        -   name: Backend_Business
+            collectors:
+                -   type: directory
+                    value: src/Backend/.+/Business/.*
+        -   name: Backend_Persistence
+            collectors:
+                -   type: directory
+                    value: src/Backend/.+/Persistence/.*
+        -   name: Backend_Communication
+            collectors:
+                -   type: directory
+                    value: src/Backend/.+/Communication/.*
+        -   name: Backend_Presentation
+            collectors:
+                -   type: directory
+                    value: src/Backend/.+/Presentation/.*
+        -   name: Frontend_Controller
+            collectors:
+                -   type: directory
+                    value: src/Frontend/.+/Controller/.*
+        -   name: Frontend_Theme
+            collectors:
+                -   type: directory
+                    value: src/Frontend/.+/Theme/.*
+        -   name: Client
+            collectors:
+                -   type: directory
+                    value: src/Client/.+/*
+        -   name: Service
+            collectors:
+                -   type: directory
+                    value: src/Service/.+/*
+        -   name: Shared
+            collectors:
+                -   type: directory
+                    value: src/Shared/.+/*
+    ruleset:
+        Backend_Business:
+            - Backend_Business
+            - Backend_Persistence
+            - Service
+            - Shared
+        Backend_Persistence:
+            - Backend_Persistence
+            - Service
+            - Shared
+        Backend_Communication:
+            - Backend_Communication
+            - Backend_Business
+            - Service
+            - Shared
+        Backend_Presentation:
+            - Backend_Presentation
+        Frontend_Controller:
+            - Frontend_Controller
+            - Client
+            - Service
+            - Shared
+        Frontend_Theme:
+            - Frontend_Theme
+        Client:
+            - Backend_Business
+            - Client
+            - Service
+            - Shared
+        Service:
+            - Service
+            - Shared
+        Shared:
+            - Shared

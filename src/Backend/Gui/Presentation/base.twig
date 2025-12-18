@@ -1,0 +1,41 @@
+{# templates/base.html.twig #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Symfony App{% endblock %}</title>
+
+    {# Favicon #}
+    <link rel="icon" href="{{ asset('favicon.ico') }}" />
+
+    {# Stylesheets #}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+    {% endblock %}
+
+    {# JavaScript #}
+    {% block javascripts %}
+        <script src="{{ asset('build/app.js') }}"></script>
+    {% endblock %}
+</head>
+<body>
+{# Header #}
+<header>
+    <nav>
+        <a href="{{ path('homepage') }}">Home</a>
+        <a href="{{ path('about') }}">About</a>
+    </nav>
+</header>
+
+{# Main content #}
+<main>
+    {% block body %}{% endblock %}
+</main>
+
+{# Footer #}
+<footer>
+    <p>&copy; {{ "now"|date("Y") }} My Symfony App</p>
+</footer>
+</body>
+</html>
