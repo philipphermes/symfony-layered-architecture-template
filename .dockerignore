@@ -1,0 +1,6 @@
+vendor
+node_modules
+var/cache
+var/log
+.dockerignore
+.git

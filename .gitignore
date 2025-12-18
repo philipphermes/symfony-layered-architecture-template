@@ -21,7 +21,7 @@ phpstan.neon
 .DS_Store
 coverage-report
 
-/src/Generated
+/src/Generated/Transfers/
 
 ###> phpunit/phpunit ###
 /phpunit.xml

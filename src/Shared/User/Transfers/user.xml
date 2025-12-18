@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transfers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="../../../../vendor/philipphermes/transfer-bundle/src/Resources/schema/transfer.xsd">
+
+    <transfer name="User">
+        <property name="id" type="int" isNullable="true"/>
+        <property name="email" type="string"/>
+        <property name="createdAt" type="DateTimeImmutable" isNullable="true"/>
+        <property name="updatedAt" type="DateTimeImmutable" isNullable="true"/>
+    </transfer>
+
+</transfers>
