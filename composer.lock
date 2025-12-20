@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3cc54e8c21f5740bbcf43ee846f10720",
+    "content-hash": "5cd693a797d465c74f65bced54ad4a7e",
     "packages": [
         {
             "name": "doctrine/collections",
@@ -887,16 +887,16 @@
         },
         {
             "name": "doctrine/orm",
-            "version": "3.5.8",
+            "version": "3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/orm.git",
-                "reference": "78dd074266e8b47a83bcf60ab5fe06c91a639168"
+                "reference": "d4e9276e79602b1eb4c4029c6c999b0d93478e2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/orm/zipball/78dd074266e8b47a83bcf60ab5fe06c91a639168",
-                "reference": "78dd074266e8b47a83bcf60ab5fe06c91a639168",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/d4e9276e79602b1eb4c4029c6c999b0d93478e2f",
+                "reference": "d4e9276e79602b1eb4c4029c6c999b0d93478e2f",
                 "shasum": ""
             },
             "require": {
@@ -969,9 +969,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/orm/issues",
-                "source": "https://github.com/doctrine/orm/tree/3.5.8"
+                "source": "https://github.com/doctrine/orm/tree/3.6.0"
             },
-            "time": "2025-11-29T23:11:02+00:00"
+            "time": "2025-12-19T20:36:14+00:00"
         },
         {
             "name": "doctrine/persistence",
@@ -1336,16 +1336,16 @@
         },
         {
             "name": "philipphermes/transfer-bundle",
-            "version": "1.3.1",
+            "version": "1.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/philipphermes/transfer-bundle.git",
-                "reference": "105b6b488f8345d24d750d9c38182a483998a4b1"
+                "reference": "a1c549272cd4f19d28e4bf055b6208ca0cc9377c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/philipphermes/transfer-bundle/zipball/105b6b488f8345d24d750d9c38182a483998a4b1",
-                "reference": "105b6b488f8345d24d750d9c38182a483998a4b1",
+                "url": "https://api.github.com/repos/philipphermes/transfer-bundle/zipball/a1c549272cd4f19d28e4bf055b6208ca0cc9377c",
+                "reference": "a1c549272cd4f19d28e4bf055b6208ca0cc9377c",
                 "shasum": ""
             },
             "require": {
@@ -1390,9 +1390,9 @@
             ],
             "support": {
                 "issues": "https://github.com/philipphermes/transfer-bundle/issues",
-                "source": "https://github.com/philipphermes/transfer-bundle/tree/1.3.1"
+                "source": "https://github.com/philipphermes/transfer-bundle/tree/1.3.2"
             },
-            "time": "2025-12-18T13:12:02+00:00"
+            "time": "2025-12-19T13:55:49+00:00"
         },
         {
             "name": "psr/cache",
@@ -6448,7 +6448,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -6456,6 +6456,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
