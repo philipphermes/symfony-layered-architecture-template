@@ -215,19 +215,19 @@ cache-warmup: ## Warm up Symfony cache
 
 phpstan: ## Run PHPStan analysis
 	@echo "$(GREEN)Running PHPStan...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app vendor/bin/phpstan analyse --memory-limit=1G
+	$(DOCKER_COMPOSE_TEST) exec app vendor/bin/phpstan analyse --memory-limit=1G
 
 deptrac: ## Run Deptrac architecture analysis
 	@echo "$(GREEN)Running Deptrac...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app vendor/bin/deptrac
+	$(DOCKER_COMPOSE_TEST) exec app vendor/bin/deptrac
 
 cs-fix: ## Fix code style with PHP CS Fixer
 	@echo "$(GREEN)Fixing code style...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app vendor/bin/php-cs-fixer fix
+	$(DOCKER_COMPOSE_TEST) exec app vendor/bin/php-cs-fixer fix
 
 cs-check: ## Check code style
 	@echo "$(GREEN)Checking code style...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app vendor/bin/php-cs-fixer fix --dry-run --diff
+	$(DOCKER_COMPOSE_TEST) exec app vendor/bin/php-cs-fixer fix --dry-run --diff
 
 qa: phpstan deptrac cs-check ## Run all quality checks
 
@@ -235,7 +235,7 @@ qa: phpstan deptrac cs-check ## Run all quality checks
 
 test: ## Run all tests
 	@echo "$(GREEN)Running tests...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app vendor/bin/phpunit
+	$(DOCKER_COMPOSE_TEST) exec app vendor/bin/phpunit
 
 test-coverage: ## Run tests with coverage
 	@echo "$(GREEN)Running tests with coverage...$(NC)"

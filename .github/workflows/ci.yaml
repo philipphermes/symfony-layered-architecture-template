@@ -43,7 +43,7 @@ jobs:
                     make test-up
 
             -   name: Run PHPStan
-                run: make test-shell > vendor/bin/phpstan analyse --memory-limit=1G
+                run: make phpstan
 
     deptrac:
         name: Deptrac
@@ -79,9 +79,7 @@ jobs:
                     make test-up
 
             -   name: Run Deptrac
-                run: |
-                    make test-shell
-                    vendor/bin/deptrac
+                run: make deptrac
 
     test:
         name: PHPUnit
@@ -123,6 +121,4 @@ jobs:
                     php bin/console doctrine:migrations:migrate --no-interaction
 
             -   name: Run Tests
-                run: |
-                    make test-shell
-                    vendor/bin/phpunit
+                run: make test
