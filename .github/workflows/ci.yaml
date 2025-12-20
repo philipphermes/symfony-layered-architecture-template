@@ -1,123 +1,130 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
 
 jobs:
-  phpstan:
-    name: PHPStan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    phpstan:
+        name: PHPStan
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+            -   name: Set up Docker Buildx
+                uses: docker/setup-buildx-action@v3
 
-      - name: Build dev image with cache
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          dockerfile: docker/frankenphp/Dockerfile
-          target: dev
-          build-args: |
-            USER_ID=1000
-            GROUP_ID=1000
-            PHP_VERSION=8.4
-            PHP_EXTENSIONS=pdo_pgsql intl zip opcache xml
-            PECL_EXTENSIONS=
-            APK_PACKAGES=postgresql-dev icu-dev libzip-dev git unzip
-          tags: symfony-layered-architecture-template-app:latest
-          load: true
-          cache-from: type=gha,scope=${{ github.ref_name }}
-          cache-to: type=gha,scope=${{ github.ref_name }},mode=max
+            -   name: Build dev image with cache
+                uses: docker/build-push-action@v5
+                with:
+                    context: .
+                    dockerfile: docker/frankenphp/Dockerfile
+                    target: dev
+                    build-args: |
+                        USER_ID=1000
+                        GROUP_ID=1000
+                        PHP_VERSION=8.4
+                        PHP_EXTENSIONS=pdo_pgsql intl zip opcache xml
+                        PECL_EXTENSIONS=
+                        APK_PACKAGES=postgresql-dev icu-dev libzip-dev git unzip
+                    tags: symfony-layered-architecture-template-app:latest
+                    load: true
+                    cache-from: type=gha,scope=${{ github.ref_name }}
+                    cache-to: type=gha,scope=${{ github.ref_name }},mode=max
 
-      - name: Setup environment
-        run: |
-          make init
-          make test-up
+            -   name: Setup environment
+                run: |
+                    make init
+                    make test-up
 
-      - name: Run PHPStan
-        run: make phpstan
+            -   name: Run PHPStan
+                run: |
+                    make test-shell
+                    vendor/bin/phpstan analyse --memory-limit=1G
 
-  deptrac:
-    name: Deptrac
-    runs-on: ubuntu-latest
-    needs: phpstan
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    deptrac:
+        name: Deptrac
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+            -   name: Set up Docker Buildx
+                uses: docker/setup-buildx-action@v3
 
-      - name: Build dev image with cache
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          dockerfile: docker/frankenphp/Dockerfile
-          target: dev
-          build-args: |
-            USER_ID=1000
-            GROUP_ID=1000
-            PHP_VERSION=8.4
-            PHP_EXTENSIONS=pdo_pgsql intl zip opcache xml
-            PECL_EXTENSIONS=
-            APK_PACKAGES=postgresql-dev icu-dev libzip-dev git unzip
-          tags: symfony-layered-architecture-template-app:latest
-          load: true
-          cache-from: type=gha,scope=${{ github.ref_name }}
-          cache-to: type=gha,scope=${{ github.ref_name }},mode=max
+            -   name: Build dev image with cache
+                uses: docker/build-push-action@v5
+                with:
+                    context: .
+                    dockerfile: docker/frankenphp/Dockerfile
+                    target: dev
+                    build-args: |
+                        USER_ID=1000
+                        GROUP_ID=1000
+                        PHP_VERSION=8.4
+                        PHP_EXTENSIONS=pdo_pgsql intl zip opcache xml
+                        PECL_EXTENSIONS=
+                        APK_PACKAGES=postgresql-dev icu-dev libzip-dev git unzip
+                    tags: symfony-layered-architecture-template-app:latest
+                    load: true
+                    cache-from: type=gha,scope=${{ github.ref_name }}
+                    cache-to: type=gha,scope=${{ github.ref_name }},mode=max
 
-      - name: Setup environment
-        run: |
-          make init
-          make test-up
+            -   name: Setup environment
+                run: |
+                    make init
+                    make test-up
 
-      - name: Run Deptrac
-        run: make deptrac
+            -   name: Run Deptrac
+                run: |
+                    make test-shell
+                    vendor/bin/deptrac
 
-  test:
-    name: PHPUnit
-    runs-on: ubuntu-latest
-    needs: deptrac
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    test:
+        name: PHPUnit
+        runs-on: ubuntu-latest
+        needs: [ deptrac, phpstan ]
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+            -   name: Set up Docker Buildx
+                uses: docker/setup-buildx-action@v3
 
-      - name: Build dev image with cache
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          dockerfile: docker/frankenphp/Dockerfile
-          target: dev
-          build-args: |
-            USER_ID=1000
-            GROUP_ID=1000
-            PHP_VERSION=8.4
-            PHP_EXTENSIONS=pdo_pgsql intl zip opcache xml
-            PECL_EXTENSIONS=
-            APK_PACKAGES=postgresql-dev icu-dev libzip-dev git unzip
-          tags: symfony-layered-architecture-template-app:latest
-          load: true
-          cache-from: type=gha,scope=${{ github.ref_name }}
-          cache-to: type=gha,scope=${{ github.ref_name }},mode=max
+            -   name: Build dev image with cache
+                uses: docker/build-push-action@v5
+                with:
+                    context: .
+                    dockerfile: docker/frankenphp/Dockerfile
+                    target: dev
+                    build-args: |
+                        USER_ID=1000
+                        GROUP_ID=1000
+                        PHP_VERSION=8.4
+                        PHP_EXTENSIONS=pdo_pgsql intl zip opcache xml
+                        PECL_EXTENSIONS=
+                        APK_PACKAGES=postgresql-dev icu-dev libzip-dev git unzip
+                    tags: symfony-layered-architecture-template-app:latest
+                    load: true
+                    cache-from: type=gha,scope=${{ github.ref_name }}
+                    cache-to: type=gha,scope=${{ github.ref_name }},mode=max
 
-      - name: Setup environment
-        run: |
-          make init
-          make test-up
+            -   name: Setup environment
+                run: |
+                    make init
+                    make test-up
 
-      - name: Run Migrations
-        run: make db-migrate
+            -   name: Run Migrations
+                run: |
+                    make test-shell
+                    php bin/console doctrine:migrations:migrate --no-interaction
 
-      - name: Run Tests
-        run: make test
+            -   name: Run Tests
+                run: |
+                    make test-shell
+                    vendor/bin/phpunit
