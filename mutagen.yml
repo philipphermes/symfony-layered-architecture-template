@@ -1,5 +1,0 @@
-sync:
-    symfony:
-        alpha: ./
-        beta: docker://symfony_app_dev/app
-        mode: two-way-resolved

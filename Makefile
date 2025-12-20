@@ -42,11 +42,10 @@ else
     MKDIR := mkdir -p
 endif
 
-# Docker Compose command (v2 syntax)
-DOCKER_COMPOSE := docker compose
-DOCKER_COMPOSE_DEV := $(DOCKER_COMPOSE) -f docker-compose.yaml
-DOCKER_COMPOSE_TEST := $(DOCKER_COMPOSE) -f docker-compose.test.yaml
-DOCKER_COMPOSE_PROD := $(DOCKER_COMPOSE) -f docker-compose.prod.yaml
+
+ENV ?= dev #dev, test or prod
+DOCKER_COMPOSE_FILE = docker-compose.$(ENV).yaml
+DOCKER_COMPOSE = docker compose -f $(DOCKER_COMPOSE_FILE)
 
 # Project name
 PROJECT_NAME := symfony-app
@@ -76,97 +75,54 @@ init: ## Initialize project (first time setup)
 	@echo "$(GREEN)Initialization complete!$(NC)"
 	@echo "$(BLUE)Run 'make dev-build' to build the containers$(NC)"
 
-##@ Development
-
-dev-build: ## Build development containers
-	@echo "$(GREEN)Building development containers for $(DETECTED_OS)...$(NC)"
+build: ## Build containers
+	@echo "$(GREEN)Building containers for $(DETECTED_OS)...$(NC)"
 	@echo "$(YELLOW)USER_ID=$(USER_ID) GROUP_ID=$(GROUP_ID)$(NC)"
-	$(DOCKER_COMPOSE_DEV) build --build-arg USER_ID=$(USER_ID) --build-arg GROUP_ID=$(GROUP_ID)
+	$(DOCKER_COMPOSE) build --build-arg USER_ID=$(USER_ID) --build-arg GROUP_ID=$(GROUP_ID)
 	@echo "$(GREEN)Build complete!$(NC)"
 
-dev-up: ## Start development environment
-	@echo "$(GREEN)Starting development environment on $(DETECTED_OS)...$(NC)"
-	$(DOCKER_COMPOSE_DEV) up -d
+up: ## Start environment
+	@echo "$(GREEN)Starting environment on $(DETECTED_OS)...$(NC)"
+	$(DOCKER_COMPOSE) up -d
 	@echo ""
-	@echo "$(GREEN)Development environment is running!$(NC)"
+	@echo "$(GREEN)Environment is running!$(NC)"
 	@echo "$(BLUE)Application: http://localhost:8080$(NC)"
 	@echo "$(BLUE)Database:    localhost:5432$(NC)"
 	@echo "$(BLUE)Health:      http://localhost:8080/health$(NC)"
 	@echo ""
-	@echo "Run '$(YELLOW)make dev-logs$(NC)' to view logs"
+	@echo "Run '$(YELLOW)make logs$(NC)' to view logs"
 
-dev-down: ## Stop development environment
-	@echo "$(YELLOW)Stopping development environment...$(NC)"
-	$(DOCKER_COMPOSE_DEV) down
-	@echo "$(GREEN)Development environment stopped$(NC)"
+down: ## Stop environment
+	@echo "$(YELLOW)Stopping environment...$(NC)"
+	$(DOCKER_COMPOSE) down
+	@echo "$(GREEN)Environment stopped$(NC)"
 
-dev-restart: ## Restart development environment
-	@echo "$(YELLOW)Restarting development environment...$(NC)"
-	$(DOCKER_COMPOSE_DEV) restart
-	@echo "$(GREEN)Development environment restarted$(NC)"
+restart: ## Restart environment
+	@echo "$(YELLOW)Restarting environment...$(NC)"
+	$(DOCKER_COMPOSE) restart
+	@echo "$(GREEN)Development restarted$(NC)"
 
-dev-logs: ## View development logs
-	$(DOCKER_COMPOSE_DEV) logs -f app
+logs: ## View logs
+	$(DOCKER_COMPOSE) logs -f app
 
-dev-shell: ## Access container shell
+shell: ## Access container shell
 	@echo "$(BLUE)Accessing container shell...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app sh
+	$(DOCKER_COMPOSE) exec app sh
 
-dev-rebuild: dev-down ## Rebuild and restart development environment
-	@echo "$(YELLOW)Rebuilding development environment...$(NC)"
-	$(DOCKER_COMPOSE_DEV) build --no-cache
+rebuild: down ## Rebuild and restart environment
+	@echo "$(YELLOW)Rebuilding environment...$(NC)"
+	$(DOCKER_COMPOSE) build --no-cache
 	@$(MAKE) dev-up
-
-##@ Testing
-
-test-build: ## Build testing containers
-	@echo "$(GREEN)Building testing containers for $(DETECTED_OS)...$(NC)"
-	@echo "$(YELLOW)USER_ID=$(USER_ID) GROUP_ID=$(GROUP_ID)$(NC)"
-	$(DOCKER_COMPOSE_TEST) build --build-arg USER_ID=$(USER_ID) --build-arg GROUP_ID=$(GROUP_ID)
-	@echo "$(GREEN)Build complete!$(NC)"
-
-test-up: ## Start testing environment
-	@echo "$(GREEN)Starting testing environment on $(DETECTED_OS)...$(NC)"
-	$(DOCKER_COMPOSE_TEST) up -d
-	@echo ""
-	@echo "$(GREEN)Testing environment is running!$(NC)"
-	@echo "$(BLUE)Application: http://localhost:8080$(NC)"
-	@echo "$(BLUE)Database:    localhost:5432$(NC)"
-	@echo "$(BLUE)Health:      http://localhost:8080/health$(NC)"
-	@echo ""
-	@echo "Run '$(YELLOW)make test-logs$(NC)' to view logs"
-
-test-down: ## Stop testing environment
-	@echo "$(YELLOW)Stopping testing environment...$(NC)"
-	$(DOCKER_COMPOSE_TEST) down
-	@echo "$(GREEN)Testing environment stopped$(NC)"
-
-test-restart: ## Restart testing environment
-	@echo "$(YELLOW)Restarting testing environment...$(NC)"
-	$(DOCKER_COMPOSE_TEST) restart
-	@echo "$(GREEN)Testing environment restarted$(NC)"
-
-test-logs: ## View testing logs
-	$(DOCKER_COMPOSE_TEST) logs -f app
-
-test-shell: ## Access container shell
-	@echo "$(BLUE)Accessing container shell...$(NC)"
-	$(DOCKER_COMPOSE_TEST) exec app sh
-
-test-rebuild: test-down ## Rebuild and restart testing environment
-	@echo "$(YELLOW)Rebuilding testing environment...$(NC)"
-	$(DOCKER_COMPOSE_TEST) build --no-cache
-	@$(MAKE) test-up
 
 ##@ Composer & Dependencies
 
 composer-install: ## Install composer dependencies
 	@echo "$(GREEN)Installing composer dependencies...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app composer install
+	$(DOCKER_COMPOSE) exec app composer install
 
 composer-update: ## Update composer dependencies
 	@echo "$(GREEN)Updating composer dependencies...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app composer update
+	$(DOCKER_COMPOSE) exec app composer update
 
 composer-require: ## Install a package (usage: make composer-require PACKAGE=vendor/package)
 	@if [ -z "$(PACKAGE)" ]; then \
@@ -175,59 +131,59 @@ composer-require: ## Install a package (usage: make composer-require PACKAGE=ven
 		exit 1; \
 	fi
 	@echo "$(GREEN)Installing $(PACKAGE)...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app composer require $(PACKAGE)
+	$(DOCKER_COMPOSE) exec app composer require $(PACKAGE)
 
 ##@ Database
 
 db-migrate: ## Run database migrations
 	@echo "$(GREEN)Running database migrations...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app php bin/console doctrine:migrations:migrate --no-interaction
+	$(DOCKER_COMPOSE) exec app php bin/console doctrine:migrations:migrate --no-interaction
 
 db-migrate-create: ## Create new migration
 	@echo "$(GREEN)Creating new migration...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app php bin/console doctrine:migrations:diff
+	$(DOCKER_COMPOSE) exec app php bin/console doctrine:migrations:diff
 
 db-migrate-status: ## Check migration status
-	$(DOCKER_COMPOSE_DEV) exec app php bin/console doctrine:migrations:status
+	$(DOCKER_COMPOSE) exec app php bin/console doctrine:migrations:status
 
 db-fixtures: ## Load database fixtures
 	@echo "$(GREEN)Loading database fixtures...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app php bin/console doctrine:fixtures:load --no-interaction
+	$(DOCKER_COMPOSE) exec app php bin/console doctrine:fixtures:load --no-interaction
 
 db-reset: ## Reset database (drop, create, migrate, fixtures)
 	@echo "$(YELLOW)Resetting database...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app php bin/console doctrine:database:drop --force --if-exists
-	$(DOCKER_COMPOSE_DEV) exec app php bin/console doctrine:database:create
-	$(DOCKER_COMPOSE_DEV) exec app php bin/console doctrine:migrations:migrate --no-interaction
+	$(DOCKER_COMPOSE) exec app php bin/console doctrine:database:drop --force --if-exists
+	$(DOCKER_COMPOSE) exec app php bin/console doctrine:database:create
+	$(DOCKER_COMPOSE) exec app php bin/console doctrine:migrations:migrate --no-interaction
 	@echo "$(GREEN)Database reset complete$(NC)"
 
 ##@ Cache
 
 cache-clear: ## Clear Symfony cache
 	@echo "$(GREEN)Clearing cache...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app php bin/console cache:clear
+	$(DOCKER_COMPOSE) exec app php bin/console cache:clear
 
 cache-warmup: ## Warm up Symfony cache
 	@echo "$(GREEN)Warming up cache...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app php bin/console cache:warmup
+	$(DOCKER_COMPOSE) exec app php bin/console cache:warmup
 
 ##@ Code Quality
 
 phpstan: ## Run PHPStan analysis
 	@echo "$(GREEN)Running PHPStan...$(NC)"
-	$(DOCKER_COMPOSE_TEST) exec app vendor/bin/phpstan analyse --memory-limit=1G
+	$(DOCKER_COMPOSE) exec app vendor/bin/phpstan analyse --memory-limit=1G
 
 deptrac: ## Run Deptrac architecture analysis
 	@echo "$(GREEN)Running Deptrac...$(NC)"
-	$(DOCKER_COMPOSE_TEST) exec app vendor/bin/deptrac
+	$(DOCKER_COMPOSE) exec app vendor/bin/deptrac
 
 cs-fix: ## Fix code style with PHP CS Fixer
 	@echo "$(GREEN)Fixing code style...$(NC)"
-	$(DOCKER_COMPOSE_TEST) exec app vendor/bin/php-cs-fixer fix
+	$(DOCKER_COMPOSE) exec app vendor/bin/php-cs-fixer fix
 
 cs-check: ## Check code style
 	@echo "$(GREEN)Checking code style...$(NC)"
-	$(DOCKER_COMPOSE_TEST) exec app vendor/bin/php-cs-fixer fix --dry-run --diff
+	$(DOCKER_COMPOSE) exec app vendor/bin/php-cs-fixer fix --dry-run --diff
 
 qa: phpstan deptrac cs-check ## Run all quality checks
 
@@ -235,60 +191,30 @@ qa: phpstan deptrac cs-check ## Run all quality checks
 
 test: ## Run all tests
 	@echo "$(GREEN)Running tests...$(NC)"
-	$(DOCKER_COMPOSE_TEST) exec app vendor/bin/phpunit
+	$(DOCKER_COMPOSE) exec app vendor/bin/phpunit
 
 test-coverage: ## Run tests with coverage
 	@echo "$(GREEN)Running tests with coverage...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-html coverage-report
+	$(DOCKER_COMPOSE) exec app php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-html coverage-report
 	@echo "$(BLUE)Coverage report: coverage-report/index.html$(NC)"
 
 test-unit: ## Run unit tests only
 	@echo "$(GREEN)Running unit tests...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app vendor/bin/phpunit tests/Unit
+	$(DOCKER_COMPOSE) exec app vendor/bin/phpunit tests/Unit
 
 test-integration: ## Run integration tests only
 	@echo "$(GREEN)Running integration tests...$(NC)"
-	$(DOCKER_COMPOSE_DEV) exec app vendor/bin/phpunit tests/Integration
-
-##@ Production
-
-prod-build: ## Build production containers
-	@echo "$(GREEN)Building production containers...$(NC)"
-	$(DOCKER_COMPOSE_PROD) build
-	@echo "$(GREEN)Production build complete!$(NC)"
-
-prod-up: ## Start production environment
-	@echo "$(GREEN)Starting production environment...$(NC)"
-	$(DOCKER_COMPOSE_PROD) up -d
-	@echo ""
-	@echo "$(GREEN)Production environment is running!$(NC)"
-	@echo "$(BLUE)Application: http://localhost$(NC)"
-	@echo ""
-
-prod-down: ## Stop production environment
-	@echo "$(YELLOW)Stopping production environment...$(NC)"
-	$(DOCKER_COMPOSE_PROD) down
-	@echo "$(GREEN)Production environment stopped$(NC)"
-
-prod-logs: ## View production logs
-	$(DOCKER_COMPOSE_PROD) logs -f app
-
-prod-shell: ## Access production container shell
-	@echo "$(BLUE)Accessing production container shell...$(NC)"
-	$(DOCKER_COMPOSE_PROD) exec app sh
+	$(DOCKER_COMPOSE) exec app vendor/bin/phpunit tests/Integration
 
 ##@ Docker Management
 
 ps: ## Show running containers
-	$(DOCKER_COMPOSE_DEV) ps
-
-stats: ## Show container resource usage
-	docker stats $(PROJECT_NAME)_app_dev $(PROJECT_NAME)_db_dev
+	$(DOCKER_COMPOSE) ps
 
 clean: ## Remove all containers, volumes, and images
 	@echo "$(RED)WARNING: This will remove all containers, volumes, and images!$(NC)"
 	@echo -n "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
-	$(DOCKER_COMPOSE_DEV) down -v --rmi all --remove-orphans
+	$(DOCKER_COMPOSE) down -v --rmi all --remove-orphans
 	@echo "$(GREEN)Cleanup complete$(NC)"
 
 prune: ## Prune Docker system (free up space)
@@ -312,7 +238,7 @@ info: ## Show system information
 	@docker compose version
 	@echo ""
 	@echo "$(BLUE)Running Containers:$(NC)"
-	@$(DOCKER_COMPOSE_DEV) ps
+	@$(DOCKER_COMPOSE) ps
 
 check-env: ## Check if .env file exists
 	@if [ ! -f .env ]; then \
@@ -325,14 +251,14 @@ check-env: ## Check if .env file exists
 
 ##@ Convenience
 
-fresh: clean init dev-build dev-up composer-install db-reset ## Fresh install (clean + setup + start)
+fresh: clean init build up composer-install db-reset ## Fresh install (clean + setup + start)
 	@echo ""
 	@echo "$(GREEN)Fresh installation complete!$(NC)"
 	@echo "$(BLUE)Application is ready at http://localhost:8080$(NC)"
 
-restart: dev-down dev-up ## Quick restart (down + up)
+restart: down up ## Quick restart (down + up)
 
-rebuild: dev-down dev-build dev-up ## Rebuild containers (down + build + up)
+rebuild: down build up ## Rebuild containers (down + build + up)
 
 update: composer-update db-migrate cache-clear ## Update dependencies and database
 	@echo "$(GREEN)Project updated!$(NC)"
