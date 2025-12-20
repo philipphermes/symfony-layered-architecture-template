@@ -1,0 +1,62 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    phpstan:
+        name: PHPStan
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Setup environment
+                run: |
+                    make init
+                    make dev-build
+                    make dev-up
+
+            -   name: Run PHPStan
+                run: make phpstan
+
+    deptrac:
+        name: Deptrac
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Setup environment
+                run: |
+                    make init
+                    make dev-build
+                    make dev-up
+
+            -   name: Run Deptrac
+                run: make deptrac
+
+    test:
+        name: PHPUnit
+        runs-on: ubuntu-latest
+        needs: [ deptrac, phpstan ]
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Setup environment
+                run: |
+                    make init
+                    make dev-build
+                    make dev-up
+
+            -   name: Run Migrations
+                run: make db-migrate
+
+            -   name: Run Tests
+                run: make test
