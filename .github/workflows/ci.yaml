@@ -43,9 +43,7 @@ jobs:
                     make test-up
 
             -   name: Run PHPStan
-                run: |
-                    make test-shell
-                    vendor/bin/phpstan analyse --memory-limit=1G
+                run: make test-shell > vendor/bin/phpstan analyse --memory-limit=1G
 
     deptrac:
         name: Deptrac
