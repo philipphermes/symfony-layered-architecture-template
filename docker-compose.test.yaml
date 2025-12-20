@@ -11,7 +11,7 @@ services:
                 APK_PACKAGES: "postgresql-dev icu-dev libzip-dev git unzip"
                 USER_ID: ${USER_ID:-1000}
                 GROUP_ID: ${GROUP_ID:-1000}
-        container_name: symfony_app_dev
+        container_name: symfony_app_test
         hostname: app
         ports:
             - "8080:80"
@@ -23,9 +23,8 @@ services:
             - symfony_var:/app/var
         env_file:
             - .env
+            - .env.test
         environment:
-            - APP_ENV=dev
-            - XDEBUG_MODE=debug
             - COMPOSER_ALLOW_SUPERUSER=1
         extra_hosts:
             - "host.docker.internal:host-gateway"
@@ -43,7 +42,7 @@ services:
 
     database:
         image: postgres:${POSTGRES_VERSION:-16}-alpine
-        container_name: symfony_db_dev
+        container_name: symfony_db_test
         environment:
             POSTGRES_DB: ${POSTGRES_DB:-app}
             POSTGRES_USER: ${POSTGRES_USER:-app}

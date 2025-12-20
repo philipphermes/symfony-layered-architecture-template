@@ -45,6 +45,7 @@ endif
 # Docker Compose command (v2 syntax)
 DOCKER_COMPOSE := docker compose
 DOCKER_COMPOSE_DEV := $(DOCKER_COMPOSE) -f docker-compose.yaml
+DOCKER_COMPOSE_TEST := $(DOCKER_COMPOSE) -f docker-compose.test.yaml
 DOCKER_COMPOSE_PROD := $(DOCKER_COMPOSE) -f docker-compose.prod.yaml
 
 # Project name
@@ -115,6 +116,47 @@ dev-rebuild: dev-down ## Rebuild and restart development environment
 	@echo "$(YELLOW)Rebuilding development environment...$(NC)"
 	$(DOCKER_COMPOSE_DEV) build --no-cache
 	@$(MAKE) dev-up
+
+##@ Testing
+
+test-build: ## Build testing containers
+	@echo "$(GREEN)Building testing containers for $(DETECTED_OS)...$(NC)"
+	@echo "$(YELLOW)USER_ID=$(USER_ID) GROUP_ID=$(GROUP_ID)$(NC)"
+	$(DOCKER_COMPOSE_TEST) build --build-arg USER_ID=$(USER_ID) --build-arg GROUP_ID=$(GROUP_ID)
+	@echo "$(GREEN)Build complete!$(NC)"
+
+test-up: ## Start testing environment
+	@echo "$(GREEN)Starting testing environment on $(DETECTED_OS)...$(NC)"
+	$(DOCKER_COMPOSE_TEST) up -d
+	@echo ""
+	@echo "$(GREEN)Testing environment is running!$(NC)"
+	@echo "$(BLUE)Application: http://localhost:8080$(NC)"
+	@echo "$(BLUE)Database:    localhost:5432$(NC)"
+	@echo "$(BLUE)Health:      http://localhost:8080/health$(NC)"
+	@echo ""
+	@echo "Run '$(YELLOW)make test-logs$(NC)' to view logs"
+
+test-down: ## Stop testing environment
+	@echo "$(YELLOW)Stopping testing environment...$(NC)"
+	$(DOCKER_COMPOSE_TEST) down
+	@echo "$(GREEN)Testing environment stopped$(NC)"
+
+test-restart: ## Restart testing environment
+	@echo "$(YELLOW)Restarting testing environment...$(NC)"
+	$(DOCKER_COMPOSE_TEST) restart
+	@echo "$(GREEN)Testing environment restarted$(NC)"
+
+test-logs: ## View testing logs
+	$(DOCKER_COMPOSE_TEST) logs -f app
+
+test-shell: ## Access container shell
+	@echo "$(BLUE)Accessing container shell...$(NC)"
+	$(DOCKER_COMPOSE_TEST) exec app sh
+
+test-rebuild: test-down ## Rebuild and restart testing environment
+	@echo "$(YELLOW)Rebuilding testing environment...$(NC)"
+	$(DOCKER_COMPOSE_TEST) build --no-cache
+	@$(MAKE) test-up
 
 ##@ Composer & Dependencies
 
