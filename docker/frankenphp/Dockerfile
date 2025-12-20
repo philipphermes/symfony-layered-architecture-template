@@ -2,8 +2,6 @@ ARG PHP_VERSION=8.4
 ARG PHP_EXTENSIONS
 ARG PECL_EXTENSIONS
 ARG APK_PACKAGES
-ARG USER_ID=1000
-ARG GROUP_ID=1000
 
 # Use Alpine-based PHP image
 FROM php:${PHP_VERSION}-cli-alpine AS base
@@ -11,8 +9,6 @@ FROM php:${PHP_VERSION}-cli-alpine AS base
 ARG PHP_EXTENSIONS
 ARG PECL_EXTENSIONS
 ARG APK_PACKAGES
-ARG USER_ID
-ARG GROUP_ID
 
 # Install system dependencies using apk
 RUN apk add --no-cache \
@@ -20,15 +16,7 @@ RUN apk add --no-cache \
     ca-certificates \
     libcap \
     bash \
-    shadow \
     ${APK_PACKAGES}
-
-# Create user with same UID/GID as host (for development)
-RUN if [ "$USER_ID" != "82" ]; then \
-        deluser www-data 2>/dev/null || true; \
-        addgroup -g ${GROUP_ID} www-data; \
-        adduser -D -u ${USER_ID} -G www-data www-data; \
-    fi
 
 # Install mlocati's PHP extension installer
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
@@ -77,13 +65,13 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV APP_ENV=dev
 ENV FRANKENPHP_CONFIG=/etc/caddy/Caddyfile
 
-# Create necessary directories with correct permissions
+# Create necessary directories
 RUN mkdir -p /app/var /app/vendor /app/public && \
     chown -R www-data:www-data /app
 
 EXPOSE 80 443 2019
 
-# Use the entrypoint script
+# Use the entrypoint script!
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch"]
 

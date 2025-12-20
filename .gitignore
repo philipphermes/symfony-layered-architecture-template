@@ -1,5 +1,6 @@
 
 ###> symfony/framework-bundle ###
+/.env
 /.env.local
 /.env.local.php
 /.env.*.local
@@ -8,6 +9,10 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+
+###> docker ###
+/.env.prod
+###< docker ###
 
 ###> deptrac/deptrac ###
 /.deptrac.cache

@@ -1,0 +1,71 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: docker/frankenphp/Dockerfile
+            target: dev
+            args:
+                PHP_VERSION: "8.4"
+                PHP_EXTENSIONS: "pdo_pgsql intl zip opcache xml"
+                PECL_EXTENSIONS: ""
+                APK_PACKAGES: "postgresql-dev icu-dev libzip-dev git unzip"
+                USER_ID: ${USER_ID:-1000}
+                GROUP_ID: ${GROUP_ID:-1000}
+        container_name: symfony_app_dev
+        hostname: app
+        ports:
+            - "8080:80"
+            - "8443:443"
+            - "2019:2019"
+        volumes:
+            - ./:/app:${VOLUME_FLAGS:-cached}
+            - symfony_vendor:/app/vendor
+            - symfony_var:/app/var
+        env_file:
+            - .env
+            - .env.local
+        environment:
+            - APP_ENV=dev
+            - XDEBUG_MODE=debug
+            - COMPOSER_ALLOW_SUPERUSER=1
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        healthcheck:
+            test: [ "CMD", "curl", "-f", "http://localhost/health" ]
+            interval: 30s
+            timeout: 3s
+            retries: 3
+            start_period: 40s
+        networks:
+            - symfony_network
+        depends_on:
+            database:
+                condition: service_healthy
+
+    database:
+        image: postgres:${POSTGRES_VERSION:-16}-alpine
+        container_name: symfony_db_dev
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB:-app}
+            POSTGRES_USER: ${POSTGRES_USER:-app}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
+        healthcheck:
+            test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
+            timeout: 5s
+            retries: 5
+            start_period: 60s
+        volumes:
+            - database_data_dev:/var/lib/postgresql/data:rw
+        ports:
+            - "${POSTGRES_PORT:-5432}:5432"
+        networks:
+            - symfony_network
+
+volumes:
+    symfony_vendor:
+    symfony_var:
+    database_data_dev:
+
+networks:
+    symfony_network:
+        driver: bridge

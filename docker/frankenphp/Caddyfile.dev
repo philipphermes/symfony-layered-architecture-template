@@ -1,0 +1,39 @@
+{
+    frankenphp
+    order php_server before file_server
+
+# Enable debug mode for development
+    debug
+}
+
+:80 {
+    root * /app/public
+
+# PHP server with Symfony
+    php_server {
+                   resolve_root_symlink
+               }
+
+# Enable compression
+    encode zstd gzip
+
+# File server for static assets
+    file_server
+
+# Health check endpoint
+    handle /health {
+                       respond "OK" 200
+                   }
+
+# Detailed error pages in development
+    handle_errors {
+                      respond "{err.status_code} {err.status_text}"
+                  }
+
+# Logging
+    log {
+            output stdout
+            format console
+            level DEBUG
+        }
+}

@@ -1,6 +1,25 @@
-vendor
-node_modules
-var/cache
-var/log
-.dockerignore
+# These files are NEVER needed in the image
 .git
+.gitignore
+.idea
+.vscode
+.DS_Store
+compose*.yml
+.dockerignore
+
+# Don't copy these - they'll be generated
+/vendor/
+/var/cache/
+/var/log/
+/var/sessions/
+
+# Environment files
+.env.local
+.env.*.local
+.env.test
+.env.dev
+.env
+
+# CI/CD
+.github
+.gitlab-ci.yml

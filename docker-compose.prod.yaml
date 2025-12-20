@@ -1,0 +1,75 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/frankenphp/Dockerfile
+      target: prod
+      args:
+        PHP_VERSION: "8.4"
+        PHP_EXTENSIONS: "pdo_pgsql intl zip opcache xml"
+        PECL_EXTENSIONS: ""
+        APK_PACKAGES: "postgresql-dev icu-dev libzip-dev"
+    container_name: symfony_app_prod
+    hostname: app
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - .env
+    environment:
+      - APP_ENV=prod
+      - APP_DEBUG=0
+      - VIRTUAL_HOST=${NGINX_PROXY_HOST}
+      - LETSENCRYPT_HOST=${NGINX_PROXY_HOST}
+      - LETSENCRYPT_EMAIL=${NGINX_PROXY_EMAIL}
+      - VIRTUAL_PORT=80
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost/health" ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+    networks:
+      - symfony_network
+    depends_on:
+      database:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 512M
+
+  database:
+    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    container_name: symfony_db_prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - database_data_prod:/var/lib/postgresql/data:rw
+    networks:
+      - symfony_network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+volumes:
+  database_data_prod:
+
+networks:
+  symfony_network:
+    driver: bridge
