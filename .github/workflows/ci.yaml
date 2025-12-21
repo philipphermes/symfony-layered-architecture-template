@@ -26,7 +26,7 @@ jobs:
                 uses: docker/build-push-action@v5
                 with:
                     context: .
-                    dockerfile: docker/frankenphp/Dockerfile
+                    file: docker/frankenphp/Dockerfile
                     target: dev
                     build-args: |
                         PHP_VERSION=8.4
@@ -67,7 +67,7 @@ jobs:
                 uses: docker/build-push-action@v5
                 with:
                     context: .
-                    dockerfile: docker/frankenphp/Dockerfile
+                    file: docker/frankenphp/Dockerfile
                     target: dev
                     build-args: |
                         PHP_VERSION=8.4
@@ -109,7 +109,7 @@ jobs:
                 uses: docker/build-push-action@v5
                 with:
                     context: .
-                    dockerfile: docker/frankenphp/Dockerfile
+                    file: docker/frankenphp/Dockerfile
                     target: dev
                     build-args: |
                         PHP_VERSION=8.4
