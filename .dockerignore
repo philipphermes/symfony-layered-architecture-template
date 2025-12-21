@@ -4,12 +4,18 @@
 .idea
 .vscode
 .DS_Store
-compose*.yml
 .dockerignore
+docker-compose.yaml
+docker-compose*.yaml
+README.md
+LICENSE.md
 
 # Don't copy these - they'll be generated
 /vendor/
-/var/
+/node_modules/
+/var/cache
+/var/session
+/src/Generated/
 
 # Environment files
 .env.local

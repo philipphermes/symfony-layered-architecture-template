@@ -39,7 +39,7 @@ install() {
 if [ "$command" == "boot" ]; then
     isDockerComposeFileProvided
     echo "$file" > "$STATE_FILE"
-    docker compose -f $file build --no-cache
+    docker compose -f $file build $3 #eg. --no-cache
 fi
 
 if [[ "$command" == "up" || "$command" == "start" ]]; then
