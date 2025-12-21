@@ -1,0 +1,68 @@
+#!/bin/bash
+
+NC="\033[0m"
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+STATE_FILE="$SCRIPT_DIR/.compose-file"
+
+command=$1;
+
+if [[ -z "$2" && ! -f "$STATE_FILE" ]]; then
+    echo -e "${RED}Please boot first${NC}\n"
+    exit 1
+fi
+
+file="${2:-$(cat "$STATE_FILE")}"
+
+isDockerComposeFileProvided() {
+    if [[ -z "$file" ]]; then
+        echo -e "${RED}Please provide a docker-compose file${NC}\n"
+        echo -e "Available files:"
+        echo -e "* docker-compose.yml (dev)"
+        echo -e "* docker-compose.test.yml (test)"
+        echo -e "* docker-compose.prod.yml (prod)"
+        exit 1
+    fi
+}
+
+install() {
+    docker-compose -f $file up -d
+    docker-compose exec app composer install
+    docker-compose exec app php bin/console doctrine:migrations:migrate --no-interaction
+    docker-compose exec app php bin/console transfer:generate
+    docker-compose exec app php bin/console cache:warmup
+}
+
+if [ "$command" == "boot" ]; then
+    isDockerComposeFileProvided
+    echo "$file" > "$STATE_FILE"
+    docker-compose -f $file build --no-cache
+fi
+
+if [[ "$command" == "up" || "$command" == "start" ]]; then
+    docker-compose -f $file up -d
+fi
+
+if [ "$command" == "stop" ]; then
+    docker-compose stop
+fi
+
+if [ "$command" == "down" ]; then
+    docker-compose -f $file down -v
+fi
+
+if [ "$command" == "cli" ]; then
+    docker-compose exec app sh
+fi
+
+if [ "$command" == "install" ]; then
+    install
+fi
+
+if [ "$command" == "reset" ]; then
+    docker-compose -f $file down -v
+    sleep 5
+    install
+fi

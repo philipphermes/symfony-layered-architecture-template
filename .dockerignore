@@ -9,9 +9,7 @@ compose*.yml
 
 # Don't copy these - they'll be generated
 /vendor/
-/var/cache/
-/var/log/
-/var/sessions/
+/var/
 
 # Environment files
 .env.local

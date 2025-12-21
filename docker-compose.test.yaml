@@ -18,7 +18,7 @@ services:
             - "8443:443"
             - "2019:2019"
         volumes:
-            - ./:/app:${VOLUME_FLAGS:-cached}
+            - ./:/app:cached
             - symfony_vendor:/app/vendor
             - symfony_var:/app/var
         env_file:

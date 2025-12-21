@@ -25,8 +25,8 @@ phpstan.neon
 .idea
 .DS_Store
 coverage-report
-
 /src/Generated/Transfers/
+/docker/.compose-file
 
 ###> phpunit/phpunit ###
 /phpunit.xml

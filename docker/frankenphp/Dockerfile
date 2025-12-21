@@ -51,18 +51,18 @@ FROM base AS dev
 RUN install-php-extensions xdebug
 
 COPY docker/frankenphp/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-COPY docker/frankenphp/opcache.dev.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY docker/frankenphp/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 # Create Caddy config directory
 RUN mkdir -p /etc/caddy
-COPY docker/frankenphp/Caddyfile.dev /etc/caddy/Caddyfile
+COPY docker/frankenphp/Caddyfile /etc/caddy/Caddyfile
 
 # Copy and set up entrypoint script
 COPY docker/frankenphp/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV APP_ENV=dev
+ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV FRANKENPHP_CONFIG=/etc/caddy/Caddyfile
 
 # Create necessary directories
