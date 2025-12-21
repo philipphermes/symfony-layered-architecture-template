@@ -19,7 +19,7 @@ interface UserRepositoryInterface
     /**
      * @param int $id
      *
-     * @return UserTransfer|null
+     * @return UserEntity|null
      */
     public function findOneById(int $id): ?UserEntity;
 }

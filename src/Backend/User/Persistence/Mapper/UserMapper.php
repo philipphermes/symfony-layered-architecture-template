@@ -31,7 +31,7 @@ class UserMapper
     public function mapTransferToEntity(UserTransfer $userTransfer, ?UserEntity $userEntity): UserEntity
     {
         return ($userEntity ?? new UserEntity())->setEmail(
-            $userTransfer->getEmail() ?? $userEntity->getEmail()
+            $userTransfer->getEmail() ?? $userEntity?->getEmail()
         );
     }
 }
