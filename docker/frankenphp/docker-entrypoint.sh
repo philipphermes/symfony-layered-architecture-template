@@ -7,9 +7,6 @@ if [ "$APP_ENV" = "dev" ]; then
         composer install --no-interaction --prefer-dist
     fi
 
-    echo "Ensuring proper permissions..."
-    mkdir -p var/cache var/log
-
     if [ -f "bin/console" ]; then
         php bin/console cache:clear --no-warmup || true
         php bin/console cache:warmup || true

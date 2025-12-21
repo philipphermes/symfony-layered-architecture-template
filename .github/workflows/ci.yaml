@@ -9,8 +9,38 @@ on:
             - main
 
 jobs:
+    setup:
+        name: Setup
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Set up Docker Buildx
+                uses: docker/setup-buildx-action@v3
+
+            -   name: Copy env file
+                run: cp .env.dist .env
+
+            -   name: Build image with cache
+                uses: docker/build-push-action@v5
+                with:
+                    context: .
+                    file: docker/frankenphp/Dockerfile
+                    target: dev
+                    build-args: |
+                        PHP_VERSION=8.4
+                        PHP_EXTENSIONS=pdo_pgsql intl zip opcache xml
+                        PECL_EXTENSIONS=
+                        APK_PACKAGES=postgresql-dev icu-dev libzip-dev git unzip
+                    tags: symfony-layered-architecture-template-app:latest
+                    load: true
+                    cache-from: type=gha,scope=${{ github.ref_name }}
+                    cache-to: type=gha,scope=${{ github.ref_name }},mode=max
+
     phpstan:
         name: PHPStan
+        needs: setup
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout code
@@ -43,7 +73,6 @@ jobs:
 
             -   name: Install dependencies
                 run: |
-                    docker compose exec app composer install
                     docker-compose exec app php bin/console transfer:generate
                     docker-compose exec app php bin/console cache:warmup
 
@@ -52,6 +81,7 @@ jobs:
 
     deptrac:
         name: Deptrac
+        needs: setup
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout code
@@ -84,11 +114,10 @@ jobs:
 
             -   name: Install dependencies
                 run: |
-                    docker compose exec app composer install
                     docker-compose exec app php bin/console transfer:generate
                     docker-compose exec app php bin/console cache:warmup
 
-            -   name: Run PHPStan
+            -   name: Run Deptrac
                 run: docker-compose exec app vendor/bin/deptrac
 
     test:
@@ -126,10 +155,9 @@ jobs:
 
             -   name: Install dependencies
                 run: |
-                    docker compose exec app composer install
                     docker-compose exec app php bin/console doctrine:migrations:migrate --no-interaction
                     docker-compose exec app php bin/console transfer:generate
                     docker-compose exec app php bin/console cache:warmup
 
-            -   name: Run PHPStan
+            -   name: Run PHPUnit
                 run: docker-compose exec app vendor/bin/phpunit
