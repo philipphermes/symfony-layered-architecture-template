@@ -6,7 +6,6 @@
 
 # Force LF for Dockerfile
 Dockerfile text eol=lf
-docker-entrypoint.sh text eol=lf
 
 # Force LF for config files
 *.ini text eol=lf

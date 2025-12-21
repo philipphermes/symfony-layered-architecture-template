@@ -100,7 +100,6 @@ Xdebug is pre-configured in development mode:
 │       ├── Dockerfile           # Multi-stage build
 │       ├── Caddyfile.dev       # Development Caddy config
 │       ├── Caddyfile.prod      # Production Caddy config
-│       ├── docker-entrypoint.sh
 │       ├── xdebug.ini
 │       ├── opcache.dev.ini
 │       └── opcache.prod.ini

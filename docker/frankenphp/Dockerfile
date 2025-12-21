@@ -57,18 +57,11 @@ COPY docker/frankenphp/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 RUN mkdir -p /etc/caddy
 COPY docker/frankenphp/Caddyfile /etc/caddy/Caddyfile
 
-# Copy and set up entrypoint script
-COPY docker/frankenphp/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-# Create necessary directories
-RUN mkdir -p /app/var /app/vendor /app/public && \
-    chown -R www-data:www-data /app
+# Copy application files
+COPY --chown=www-data:www-data . /app
 
 EXPOSE 80 443 2019
 
-# Use the entrypoint script!
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch"]
 
 # ==========================================
