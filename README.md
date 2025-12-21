@@ -2,6 +2,11 @@
 
 A modern Symfony template using a layered architecture pattern with FrankenPHP for high-performance PHP applications. Features a flexible Docker setup optimized for development and production across all platforms.
 
+
+[![CI](https://github.com/philipphermes/symfony-layered-architecture-template/actions/workflows/ci.yaml/badge.svg)](https://github.com/philipphermes/symfony-layered-architecture-template/actions/workflows/ci.yaml)
+[![PHP](https://img.shields.io/badge/php-%3E%3D%208.4-8892BF.svg)]((https://img.shields.io/badge/php-%3E%3D%208.4-8892BF.svg))
+[![Symfony](https://img.shields.io/badge/symfony-8-8892BF.svg)]((https://img.shields.io/badge/symfony-8-8892BF.svg))
+
 ## Features
 
 - 🚀 **FrankenPHP** - Modern PHP application server with built-in Caddy
@@ -98,10 +103,10 @@ Xdebug is pre-configured in development mode:
 ├── docker/
 │   └── frankenphp/
 │       ├── Dockerfile           # Multi-stage build
-│       ├── Caddyfile.dev       # Development Caddy config
+│       ├── Caddyfile       # Development Caddy config
 │       ├── Caddyfile.prod      # Production Caddy config
 │       ├── xdebug.ini
-│       ├── opcache.dev.ini
+│       ├── opcache.ini
 │       └── opcache.prod.ini
 ├── public/              # Web root
 ├── src/
@@ -125,6 +130,7 @@ Xdebug is pre-configured in development mode:
 ├── tests/               # Test suite
 ├── docker-compose.yml           # Development compose file
 ├── docker-compose.prod.yml      # Production compose file
+├── docker-compose.test.yml      # Test compose file
 └── .gitattributes              # Cross-platform line endings
 ```
 
