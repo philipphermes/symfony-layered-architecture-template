@@ -36,7 +36,7 @@ jobs:
                     tags: symfony-layered-architecture-template-app:latest
                     load: true
                     cache-from: type=gha,scope=${{ github.ref_name }}
-                    cache-to: type=gha,scope=${{ github.ref_name }},mode=max
+                    cache-to: type=gha,scope=${{ github.ref_name }},mode=max,expire-after=1d
 
     phpstan:
         name: PHPStan
@@ -66,7 +66,7 @@ jobs:
                     tags: symfony-layered-architecture-template-app:latest
                     load: true
                     cache-from: type=gha,scope=${{ github.ref_name }}
-                    cache-to: type=gha,scope=${{ github.ref_name }},mode=max
+                    cache-to: type=gha,scope=${{ github.ref_name }},mode=max,expire-after=1d
 
             -   name: Start environment
                 run: docker compose -f docker-compose.test.yaml up -d
@@ -109,7 +109,7 @@ jobs:
                     tags: symfony-layered-architecture-template-app:latest
                     load: true
                     cache-from: type=gha,scope=${{ github.ref_name }}
-                    cache-to: type=gha,scope=${{ github.ref_name }},mode=max
+                    cache-to: type=gha,scope=${{ github.ref_name }},mode=max,expire-after=1d
 
             -   name: Start environment
                 run: docker compose -f docker-compose.test.yaml up -d
