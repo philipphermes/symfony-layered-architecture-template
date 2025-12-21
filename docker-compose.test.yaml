@@ -9,8 +9,6 @@ services:
                 PHP_EXTENSIONS: "pdo_pgsql intl zip opcache xml"
                 PECL_EXTENSIONS: ""
                 APK_PACKAGES: "postgresql-dev icu-dev libzip-dev git unzip"
-                USER_ID: ${USER_ID:-1000}
-                GROUP_ID: ${GROUP_ID:-1000}
         container_name: symfony_app_test
         hostname: app
         ports:
@@ -19,8 +17,6 @@ services:
             - "2019:2019"
         volumes:
             - ./:/app:cached
-            - symfony_vendor:/app/vendor
-            - symfony_var:/app/var
         env_file:
             - .env
             - .env.test
@@ -60,8 +56,6 @@ services:
             - symfony_network
 
 volumes:
-    symfony_vendor:
-    symfony_var:
     database_data_dev:
 
 networks:
