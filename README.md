@@ -6,13 +6,14 @@ A modern Symfony template using a layered architecture pattern with FrankenPHP f
 [![CI](https://github.com/philipphermes/symfony-layered-architecture-template/actions/workflows/ci.yaml/badge.svg)](https://github.com/philipphermes/symfony-layered-architecture-template/actions/workflows/ci.yaml)
 [![PHP](https://img.shields.io/badge/php-%3E%3D%208.4-8892BF.svg)]((https://img.shields.io/badge/php-%3E%3D%208.4-8892BF.svg))
 [![Symfony](https://img.shields.io/badge/symfony-8-8892BF.svg)]((https://img.shields.io/badge/symfony-8-8892BF.svg))
+[![codecov](https://codecov.io/gh/philipphermes/symfony-layered-architecture-template/graph/badge.svg?token=BTQ0TLXHI0)](https://codecov.io/gh/philipphermes/symfony-layered-architecture-template)
 
 ## Features
 
 - 🚀 **FrankenPHP** - Modern PHP application server with built-in Caddy
 - 🐳 **Multi-stage Docker** - Optimized dev/prod configurations
 - 🔧 **Flexible PHP Extensions** - Configure via environment variables
-- 🐛 **Xdebug Ready** - Pre-configured for development debugging
+- 🐛 **Xdebug Ready** - Pre-configured for development debugging (was not able to get it to work yet)
 - 🗄️ **PostgreSQL** - Production-ready with health checks
 - ⚡ **Cross-Platform** - Works seamlessly on Linux, Mac, and Windows
 - 📦 **Live Reload** - Automatic file watching in development
@@ -140,7 +141,7 @@ Xdebug is pre-configured in development mode:
 vendor/bin/phpunit
 
 # With coverage
-XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html coverage-report
+XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html coverage
 ```
 
 ## Sniffers

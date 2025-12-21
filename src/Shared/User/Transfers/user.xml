@@ -4,7 +4,7 @@
 
     <transfer name="User">
         <property name="id" type="int" isNullable="true"/>
-        <property name="email" type="string"/>
+        <property name="email" type="string" isNullable="true"/>
         <property name="createdAt" type="DateTimeImmutable" isNullable="true"/>
         <property name="updatedAt" type="DateTimeImmutable" isNullable="true"/>
     </transfer>

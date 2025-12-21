@@ -38,4 +38,12 @@ class UserRepository extends ServiceEntityRepository implements UserRepositoryIn
 
         return $this->userMapper->mapEntityToTransfer($userEntity);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findOneById(int $id): ?UserEntity
+    {
+        return $this->find($id);
+    }
 }

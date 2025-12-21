@@ -18,7 +18,7 @@ class UserMapper
     {
         return new UserTransfer()
             ->setId($entity->getId())
-            ->setEmail($entity->getEmail() ?? '')
+            ->setEmail($entity->getEmail())
             ->setCreatedAt($entity->getCreatedAt())
             ->setUpdatedAt($entity->getUpdatedAt());
     }
@@ -30,8 +30,8 @@ class UserMapper
      */
     public function mapTransferToEntity(UserTransfer $userTransfer, ?UserEntity $userEntity): UserEntity
     {
-        return ($userEntity ?? new UserEntity())
-            ->setId($userTransfer->getId())
-            ->setEmail($userTransfer->getEmail());
+        return ($userEntity ?? new UserEntity())->setEmail(
+            $userTransfer->getEmail() ?? $userEntity->getEmail()
+        );
     }
 }

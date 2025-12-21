@@ -29,12 +29,16 @@ class UserEntity
     #[ORM\PrePersist]
     public function prePersist(): void
     {
-        $date = new \DateTimeImmutable();
-        $this->updatedAt = $date;
+        $now = new \DateTimeImmutable();
 
-        if (!$this->id) {
-            $this->createdAt = $date;
-        }
+        $this->createdAt = $now;
+        $this->updatedAt = $now;
+    }
+
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

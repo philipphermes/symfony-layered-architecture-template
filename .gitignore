@@ -24,7 +24,8 @@ phpstan.neon
 
 .idea
 .DS_Store
-coverage-report
+coverage
+coverage.xml
 /src/Generated/Transfers/
 /docker/.compose-file
 

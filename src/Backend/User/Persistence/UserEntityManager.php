@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Backend\User\Persistence;
 
-use App\Backend\User\Persistence\Entity\UserEntity;
 use App\Backend\User\Persistence\Mapper\UserMapper;
 use App\Generated\Transfers\UserTransfer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,6 +12,7 @@ class UserEntityManager implements UserEntityManagerInterface
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
+        private readonly UserRepositoryInterface $userRepository,
         private readonly UserMapper $userMapper,
     ) {}
 
@@ -27,7 +27,7 @@ class UserEntityManager implements UserEntityManagerInterface
 
         $userEntity = null;
         if ($userTransfer->getId()) {
-            $userEntity = $this->entityManager->getReference(UserEntity::class, $userTransfer->getId());
+            $userEntity = $this->userRepository->findOneById($userTransfer->getId());
         }
 
         $userEntity = $this->userMapper->mapTransferToEntity($userTransfer, $userEntity);
@@ -38,6 +38,6 @@ class UserEntityManager implements UserEntityManagerInterface
 
         $this->entityManager->flush();
 
-        return $userTransfer->setId($userEntity->getId());
+        return $this->userMapper->mapEntityToTransfer($userEntity);
     }
 }
