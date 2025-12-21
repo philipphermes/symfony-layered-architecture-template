@@ -1,5 +1,7 @@
 {
-    frankenphp
+    frankenphp {
+        watch
+    }
     order php_server before file_server
     debug
 }

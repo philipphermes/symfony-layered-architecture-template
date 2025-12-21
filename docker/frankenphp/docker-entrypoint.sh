@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-if [ "$APP_ENV" = "dev" ]; then
+if [[ "$APP_ENV" == "dev" || "$APP_ENV" == "test" ]]; then
     echo "Installing Composer dependencies..."
     if [ ! -d "vendor" ] || [ ! -f "vendor/autoload.php" ]; then
         composer install --no-interaction --prefer-dist

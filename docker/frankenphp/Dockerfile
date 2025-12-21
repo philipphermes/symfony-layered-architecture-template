@@ -61,10 +61,6 @@ COPY docker/frankenphp/Caddyfile /etc/caddy/Caddyfile
 COPY docker/frankenphp/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-ENV APP_ENV=dev
-ENV COMPOSER_ALLOW_SUPERUSER=1
-ENV FRANKENPHP_CONFIG=/etc/caddy/Caddyfile
-
 # Create necessary directories
 RUN mkdir -p /app/var /app/vendor /app/public && \
     chown -R www-data:www-data /app
@@ -85,10 +81,6 @@ COPY docker/frankenphp/opcache.prod.ini /usr/local/etc/php/conf.d/opcache.ini
 # Create Caddy config directory
 RUN mkdir -p /etc/caddy
 COPY docker/frankenphp/Caddyfile.prod /etc/caddy/Caddyfile
-
-ENV APP_ENV=prod
-ENV COMPOSER_ALLOW_SUPERUSER=1
-ENV FRANKENPHP_CONFIG=/etc/caddy/Caddyfile
 
 # Copy application files
 COPY --chown=www-data:www-data . /app
