@@ -28,32 +28,32 @@ isDockerComposeFileProvided() {
 }
 
 install() {
-    docker-compose -f $file up -d
-    docker-compose exec app php bin/console doctrine:migrations:migrate --no-interaction
-    docker-compose exec app php bin/console transfer:generate
-    docker-compose exec app php bin/console cache:warmup
+    docker compose -f $file up -d
+    docker compose exec app php bin/console doctrine:migrations:migrate --no-interaction
+    docker compose exec app php bin/console transfer:generate
+    docker compose exec app php bin/console cache:warmup
 }
 
 if [ "$command" == "boot" ]; then
     isDockerComposeFileProvided
     echo "$file" > "$STATE_FILE"
-    docker-compose -f $file build --no-cache
+    docker compose -f $file build --no-cache
 fi
 
 if [[ "$command" == "up" || "$command" == "start" ]]; then
-    docker-compose -f $file up -d
+    docker compose -f $file up -d
 fi
 
 if [ "$command" == "stop" ]; then
-    docker-compose stop
+    docker compose stop
 fi
 
 if [ "$command" == "down" ]; then
-    docker-compose -f $file down -v
+    docker compose -f $file down -v
 fi
 
 if [ "$command" == "cli" ]; then
-    docker-compose exec app sh
+    docker compose exec app sh
 fi
 
 if [ "$command" == "install" ]; then
@@ -61,7 +61,7 @@ if [ "$command" == "install" ]; then
 fi
 
 if [ "$command" == "reset" ]; then
-    docker-compose -f $file down -v
+    docker compose -f $file down -v
     sleep 5
     install
 fi
