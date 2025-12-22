@@ -24,6 +24,7 @@ services:
         environment:
             - APP_ENV=dev
             - XDEBUG_MODE=debug
+            - PHP_IDE_CONFIG=serverName=app
         extra_hosts:
             - "host.docker.internal:host-gateway"
         healthcheck:

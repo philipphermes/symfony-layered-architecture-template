@@ -29,7 +29,7 @@ class UserCreateCommand extends Command
 
         $output->writeln($result);
 
-        $userTransfer = $this->userFacade->persistUser(new UserTransfer()->setEmail($result));
+        $userTransfer = $this->userFacade->persistUser((new UserTransfer())->setEmail($result));
         $output->writeln('User created successfully');
 
         return Command::SUCCESS;

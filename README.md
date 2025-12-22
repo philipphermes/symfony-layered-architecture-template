@@ -1,6 +1,7 @@
 # Symfony Layered Architecture Template
 
-A modern Symfony template using a layered architecture pattern with FrankenPHP for high-performance PHP applications. Features a flexible Docker setup optimized for development and production across all platforms.
+A modern Symfony template using a layered architecture pattern with FrankenPHP for high-performance PHP applications.
+Features a flexible Docker setup optimized for development and production.
 
 
 [![CI](https://github.com/philipphermes/symfony-layered-architecture-template/actions/workflows/ci.yaml/badge.svg)](https://github.com/philipphermes/symfony-layered-architecture-template/actions/workflows/ci.yaml)
@@ -13,11 +14,10 @@ A modern Symfony template using a layered architecture pattern with FrankenPHP f
 - 🚀 **FrankenPHP** - Modern PHP application server with built-in Caddy
 - 🐳 **Multi-stage Docker** - Optimized dev/prod configurations
 - 🔧 **Flexible PHP Extensions** - Configure via environment variables
-- 🐛 **Xdebug Ready** - Pre-configured for development debugging (was not able to get it to work yet)
+- 🐛 **Xdebug Ready** - Pre-configured for development debugging
 - 🗄️ **PostgreSQL** - Production-ready with health checks
-- ⚡ **Cross-Platform** - Works seamlessly on Linux, Mac, and Windows
 - 📦 **Live Reload** - Automatic file watching in development
-- 🔒 **Production Optimized** - OPcache, JIT, preloading enabled
+- 🔒 **Production Optimized** - OPcache, JIT
 
 ## Requirements
 
@@ -100,48 +100,50 @@ Xdebug is pre-configured in development mode:
 
 ## Project Structure
 ```
-├── config/              # Symfony configuration
+├── config/
 ├── docker/
 │   └── frankenphp/
-│       ├── Dockerfile           # Multi-stage build
-│       ├── Caddyfile       # Development Caddy config
-│       ├── Caddyfile.prod      # Production Caddy config
+│       ├── Dockerfile
+│       ├── Caddyfile
+│       ├── Caddyfile.prod
 │       ├── xdebug.ini
 │       ├── opcache.ini
 │       └── opcache.prod.ini
-├── public/              # Web root
+├── public/
 ├── src/
 │   ├── Backend/
 │   │   └── {Module}
-│   │       ├── Business/        # Facades and Business logic
-│   │       ├── Communication/   # Controllers and commands
-│   │       ├── Persistence/     # Entities, repositories & entity managers
-│   │       └── Presentation/    # Templates and js
+│   │       ├── Business/           # Facades and Business logic
+│   │       ├── Communication/      # Controllers and commands
+│   │       ├── Persistence/        # Entities, repositories & entity managers
+│   │       └── Presentation/       # Templates and js
 │   ├── Frontend/
 │   │   └── {Module}
-│   │       ├── Controller/      # Controllers
-│   │       └── Theme/           # Templates and js
-│   ├── Services/
+│   │       ├── Controller/         # Controllers
+│   │       └── Theme/              # Templates and js
+│   ├── Client/
+│   │   └── {Module}
+│   ├── Service/
 │   │   └── {Module}
 │   ├── Shared/
 │   │   └── {Module}
 │   │       ├── Transfers/
 │   │       └── ...
-│   └── Generated/       # Migrations, Generated Transfers, ...
-├── tests/               # Test suite
-├── docker-compose.yml           # Development compose file
-├── docker-compose.prod.yml      # Production compose file
-├── docker-compose.test.yml      # Test compose file
-└── .gitattributes              # Cross-platform line endings
+│   └── Generated/                  # Migrations, Generated Transfers, ...
+├── tests/
+├── docker-compose.yml
+├── docker-compose.prod.yml
+├── docker-compose.test.yml
+└── .gitattributes
 ```
 
 ## Testing
 
-```
+```bash
 vendor/bin/phpunit
 
 # With coverage
-XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html coverage
+XDEBUG_MODE=coverage,debug vendor/bin/phpunit --coverage-html coverage
 ```
 
 ## Sniffers

@@ -40,21 +40,41 @@ deptrac:
             collectors:
                 -   type: directory
                     value: src/Shared/.+/*
+        -   name: Generated
+            collectors:
+                -   type: directory
+                    value: src/Generated/*
+        -   name: Doctrine
+            collectors:
+                -   type: classLike
+                    value: ^Doctrine\\.*
+        -   name: Vendor
+            collectors:
+                -   type: classLike
+                    value: ^(Symfony|Psr|Monolog|Ramsey|League)\\.* #need to find a better solution
+
     ruleset:
         Backend_Business:
             - Backend_Business
             - Backend_Persistence
             - Service
             - Shared
+            - Generated
+            - Vendor
         Backend_Persistence:
             - Backend_Persistence
             - Service
             - Shared
+            - Generated
+            - Doctrine
+            - Vendor
         Backend_Communication:
             - Backend_Communication
             - Backend_Business
             - Service
             - Shared
+            - Generated
+            - Vendor
         Backend_Presentation:
             - Backend_Presentation
         Frontend_Controller:
@@ -62,6 +82,8 @@ deptrac:
             - Client
             - Service
             - Shared
+            - Generated
+            - Vendor
         Frontend_Theme:
             - Frontend_Theme
         Client:
@@ -69,8 +91,18 @@ deptrac:
             - Client
             - Service
             - Shared
+            - Generated
+            - Vendor
         Service:
             - Service
             - Shared
+            - Generated
+            - Vendor
         Shared:
             - Shared
+            - Generated
+            - Vendor
+        Generated:
+            - Generated
+            - Vendor
+            - Doctrine # need this because of migrations

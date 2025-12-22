@@ -16,7 +16,7 @@ class UserMapper
      */
     public function mapEntityToTransfer(UserEntity $entity): UserTransfer
     {
-        return new UserTransfer()
+        return (new UserTransfer())
             ->setId($entity->getId())
             ->setEmail($entity->getEmail())
             ->setCreatedAt($entity->getCreatedAt())
